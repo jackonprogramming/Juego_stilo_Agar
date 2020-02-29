@@ -1,5 +1,6 @@
-var width = 800;
-var height = 800;
+var width = "99%";
+var height = "99%";
+
 
 var game = new Phaser.Game(width, height, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update });
 var player;
@@ -35,19 +36,19 @@ function create() {
 
     balls = game.add.group();
     balls.enableBody = true;
-    for (var i = 0; i < 300; i++) {
+    for (var i = 0; i < 30; i++) {
         var rand = Math.floor(Math.random() * 4);
         var bounces = generateCircle(colors[rand], 10);
         var ball = balls.create(game.world.randomX, game.world.randomY, bounces);
     }
 
     setInterval(function() {
-        for (var i = 0; i < 20; i++) {
+        for (var i = 0; i < 5; i++) {
             var rand = Math.floor(Math.random() * 5);
             var bounces = generateCircle(colors[rand], 10);
             var ball = balls.create(game.world.randomX, game.world.randomY, bounces);
         }
-    }, 3000);
+    }, 30000);
 
     var bmd = generateCircle('red', 20);
 
@@ -66,26 +67,28 @@ function update() {
     speed = game.physics.arcade.distanceBetween(player,game.input.activePointer)*5;
     game.physics.arcade.moveToPointer(player,speed);
     */
+
+
+
     game.input.addMoveCallback(function() {
         game.physics.arcade.moveToPointer(player, game.physics.arcade.distanceToPointer(player) / 2 + minSpeed);
     });
     game.physics.arcade.collide(player, balls, collisionHandler, processHandler, this);
 
 
-    if (player.body.onWall()) {
 
-        player.reset(game.world.centerX, game.world.centerY);
-
-    }
     if (player.body.onFloor()) {
 
         player.reset(game.world.centerX, game.world.centerY);
 
     }
 
-    if (player.body.checkWorldBounds()) {
+    if (player.body.onWall()) {
+
         player.reset(game.world.centerX, game.world.centerY);
+
     }
+
 
 
 }
@@ -114,10 +117,14 @@ function collisionHandler(player, ball) {
         minSpeed = minSpeed - 10;
     }
 
-    if (player_size < 300) {
+    if (player_size < 130) {
         player_size = player_size + 10;
+        game.camera.scale.x -= 0.003;
+        game.camera.scale.y -= 0.003;
     }
 
     player.scale.set(1 + player_size / 4 / 10);
     game.physics.arcade.moveToPointer(player, game.physics.arcade.distanceToPointer(player) / 2 + minSpeed);
+
 }
+game.scale.setTo(width, height);
